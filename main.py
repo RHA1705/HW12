@@ -2,6 +2,9 @@
 import pickle
 from classes import AddressBook, Record
 
+book = AddressBook()
+file_name = 'Contacts.pickle'
+
 def input_error(func):
     '''Decorator for working with exeptions'''
     def inner(*args, **kwargs):
@@ -19,8 +22,6 @@ def input_error(func):
 
 def main():
     '''Main function to work with user input'''
-    book = AddressBook()
-    file_name = 'Contacts.pickle'
     try:
         with open(file_name, 'rb') as file:
             data = pickle.load(file)
@@ -32,6 +33,11 @@ def main():
         command = input()
         exit_list = ['exit', 'close', 'good bye']
         if command in exit_list:
+            try:
+                with open(file_name, 'wb') as file:
+                    pickle.dump(book.data, file)
+            except:
+                print("I couldn't save record")
             print('Good bye!')
             break
         print(parser(command))
@@ -48,15 +54,22 @@ def parser(user_input):
         return handler_phone(user_input)
     elif user_input.lower().startswith('show all'):
         return handler_show_all(user_input)
+    elif user_input.lower().startswith('search'):
+        return handler_search(user_input)
     else:
+        return 'No comand recognize'
         
 
 @input_error
 def handler_add(user_input):
     '''Function define actions if user command is "add"'''
-    user_data = user_input.split(' ')
-    check_phone_number(user_input)
-    user_data_dict.update({user_data[1] : user_data[2]})
+    _, name, phone = user_input.split(' ')
+    record = book.find(name)
+    if not record:
+        record = Record(name)
+    record.add_phone(phone)
+    book.add_record(record)
+    
     return 'User added succesfully!'
 
 @input_error
@@ -79,17 +92,14 @@ def handler_phone(user_input):
 @input_error
 def handler_show_all(user_input):
     '''Function define actions if user command is "show all"'''
-    users_data = []
-    for key, value in user_data_dict.items():
-        row = f'For name {key} phone is {value}'
-        users_data.append(row)
-    return ', '.join(users_data)
+    users_data = list(book.data.values())
+    return ', '.join(map(str, users_data))
 
-def check_phone_number(user_input):
-    '''Function checks whether all characters are numbers'''
-    user_data = user_input.split(' ')
-    if not user_data[2].isalnum():
-        raise ValueError
+@input_error
+def handler_search(user_input):
+    _, text = user_input.split()
+    users_data = book.search(text)
+    return ', '.join(map(str, users_data))
 
 if __name__ == '__main__':
     main()
