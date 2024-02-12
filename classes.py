@@ -130,6 +130,15 @@ class AddressBook(UserDict):
         for i in range(0, len(records), n):
             yield records[i:i+n]
 
+    def search(self, text):
+        '''Search a record by name or phone.'''
+        text = text.lower().strip()
+        results = []
+        for t in self.data.values():
+            if text in t.name.value or text in ' '.join(map(str, t.phones)):
+                results.append(t)
+        return results
+
 
 if __name__ == '__main__':
     book = AddressBook()

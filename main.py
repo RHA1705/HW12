@@ -46,19 +46,18 @@ def parser(user_input):
     '''Function define key words (user commands)'''
     if user_input.lower().startswith('hello'):
         return 'How can I help you?'
-    elif user_input.lower().startswith('add '):
+    if user_input.lower().startswith('add '):
         return handler_add(user_input)
-    elif user_input.lower().startswith('change '):
+    if user_input.lower().startswith('change '):
         return handler_change(user_input)
-    elif user_input.lower().startswith('phone '):
+    if user_input.lower().startswith('phone '):
         return handler_phone(user_input)
-    elif user_input.lower().startswith('show all'):
+    if user_input.lower().startswith('show all'):
         return handler_show_all(user_input)
-    elif user_input.lower().startswith('search'):
+    if user_input.lower().startswith('search'):
         return handler_search(user_input)
-    else:
-        return 'No comand recognize'
-        
+    return 'No comand recognize'
+
 
 @input_error
 def handler_add(user_input):
@@ -69,7 +68,7 @@ def handler_add(user_input):
         record = Record(name)
     record.add_phone(phone)
     book.add_record(record)
-    
+
     return 'User added succesfully!'
 
 @input_error
