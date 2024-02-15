@@ -54,7 +54,7 @@ def parser(user_input):
         return handler_phone(user_input)
     if user_input.lower().startswith('show all'):
         return handler_show_all(user_input)
-    if user_input.lower().startswith('search'):
+    if user_input.lower().startswith('search '):
         return handler_search(user_input)
     return 'No comand recognize'
 
